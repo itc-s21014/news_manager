@@ -1,12 +1,12 @@
 package jp.ac.it_college.std.s21014.news_manager.presentation.config
 
+import jp.ac.it_college.std.s21014.news_manager.application.security.NewsManagerUserDetailsService
 import jp.ac.it_college.std.s21014.news_manager.application.service.AuthenticationService
-import jp.ac.it_college.std.s21014.news_manager.application.service.NewsManagerUserDetailsService
 import jp.ac.it_college.std.s21014.news_manager.domain.enum.RoleType
-import jp.ac.it_college.std.s21014.news_manager.presentation.config.handler.NewsManagerAccessDeniedHandler
-import jp.ac.it_college.std.s21014.news_manager.presentation.config.handler.NewsManagerAuthenticationEntryPoint
-import jp.ac.it_college.std.s21014.news_manager.presentation.config.handler.NewsManagerAuthenticationFailureHandler
-import jp.ac.it_college.std.s21014.news_manager.presentation.config.handler.NewsManagerAuthenticationSuccessHandler
+import jp.ac.it_college.std.s21014.news_manager.presentation.handler.NewsManagerAccessDeniedHandler
+import jp.ac.it_college.std.s21014.news_manager.presentation.handler.NewsManagerAuthenticationEntryPoint
+import jp.ac.it_college.std.s21014.news_manager.presentation.handler.NewsManagerAuthenticationFailureHandler
+import jp.ac.it_college.std.s21014.news_manager.presentation.handler.NewsManagerAuthenticationSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -20,29 +20,28 @@ import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @EnableWebSecurity
-class SecurityConfig(
-    private val authenticationService: AuthenticationService
-) {
+class SecurityConfig(private val authenticatorService: AuthenticationService) {
+
     @Bean
     @Order(1)
-    fun configure(http: HttpSecurity) : SecurityFilterChain {
+    fun configure(http: HttpSecurity): SecurityFilterChain {
         http.authorizeRequests {
             it
                 .mvcMatchers("/login").permitAll()
-                .mvcMatchers("/news/**").permitAll()
-                .mvcMatchers(("/admin/**")).hasAuthority(RoleType.ADMIN.toString())
+                .mvcMatchers("/news/list").permitAll()
+                .mvcMatchers("/admin/**").hasAuthority(RoleType.ADMIN.toString())
                 .anyRequest().authenticated()
-        }.csrf {
-            it
-                .disable()
-        }.formLogin {
+        }.formLogin{
             it
                 .loginProcessingUrl("/login")
                 .usernameParameter("user")
                 .passwordParameter("pass")
                 .successHandler(NewsManagerAuthenticationSuccessHandler())
                 .failureHandler(NewsManagerAuthenticationFailureHandler())
-        }.exceptionHandling {
+        }.csrf {
+            it
+                .disable()
+        }.exceptionHandling{
             it
                 .authenticationEntryPoint(NewsManagerAuthenticationEntryPoint())
                 .accessDeniedHandler(NewsManagerAccessDeniedHandler())
@@ -50,6 +49,7 @@ class SecurityConfig(
             it
                 .configurationSource(corsConfigurationSource())
         }
+
         return http.build()
     }
 
@@ -57,19 +57,20 @@ class SecurityConfig(
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun userDetailsService(): UserDetailsService = NewsManagerUserDetailsService(authenticationService)
-
+    fun userDetailsService(): UserDetailsService = NewsManagerUserDetailsService(authenticatorService)
 
     private fun corsConfigurationSource(): CorsConfigurationSource {
-        val corsConfiguration = CorsConfiguration()
-        corsConfiguration.addAllowedMethod(CorsConfiguration.ALL)
-        corsConfiguration.addAllowedHeader(CorsConfiguration.ALL)
-        corsConfiguration.addAllowedOrigin("http://localhost:3000")
-        corsConfiguration.allowCredentials = true
+        val config = CorsConfiguration().apply {
+            addAllowedMethod(CorsConfiguration.ALL)
+            addAllowedHeader(CorsConfiguration.ALL)
+            addAllowedOrigin("http://localhost:8081/")
+            allowCredentials = true
+        }
 
-        val corsConfigurationSource = UrlBasedCorsConfigurationSource()
-        corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration)
+        val source = UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration("/**", config)
+        }
 
-        return corsConfigurationSource
+        return source
     }
 }

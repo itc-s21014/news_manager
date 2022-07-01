@@ -1,23 +1,43 @@
+/*
+ * Auto-generated file. Created by MyBatis Generator
+ */
 package jp.ac.it_college.std.s21014.news_manager.infrastructure.database.mapper
 
 import java.sql.JDBCType
 import java.time.LocalDateTime
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.AliasableSqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 object NewsDynamicSqlSupport {
-    object News : SqlTable("news") {
-        val id = column<Long>("id", JDBCType.BIGINT)
+    val news = News()
 
-        val title = column<String>("title", JDBCType.VARCHAR)
+    val id = news.id
 
-        val categoryId = column<Long>("category_id", JDBCType.BIGINT)
+    val title = news.title
 
-        val publishAt = column<LocalDateTime>("publish_at", JDBCType.TIMESTAMP)
+    val categoryId = news.categoryId
 
-        val createAt = column<LocalDateTime>("create_at", JDBCType.TIMESTAMP)
+    val publishAt = news.publishAt
 
-        val userId = column<Long>("user_id", JDBCType.BIGINT)
+    val createAt = news.createAt
 
-        val body = column<String>("body", JDBCType.LONGVARCHAR)
+    val userId = news.userId
+
+    val body = news.body
+
+    class News : AliasableSqlTable<News>("news", ::News) {
+        val id = column<Long>(name = "id", jdbcType = JDBCType.BIGINT)
+
+        val title = column<String>(name = "title", jdbcType = JDBCType.VARCHAR)
+
+        val categoryId = column<Long>(name = "category_id", jdbcType = JDBCType.BIGINT)
+
+        val publishAt = column<LocalDateTime>(name = "publish_at", jdbcType = JDBCType.TIMESTAMP)
+
+        val createAt = column<LocalDateTime>(name = "create_at", jdbcType = JDBCType.TIMESTAMP)
+
+        val userId = column<Long>(name = "user_id", jdbcType = JDBCType.BIGINT)
+
+        val body = column<String>(name = "body", jdbcType = JDBCType.LONGVARCHAR)
     }
 }

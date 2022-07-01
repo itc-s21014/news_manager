@@ -1,8 +1,11 @@
+/*
+ * Auto-generated file. Created by MyBatis Generator
+ */
 package jp.ac.it_college.std.s21014.news_manager.infrastructure.database.record
 
 import java.time.LocalDateTime
 
-data class NewsRecord(
+data class News(
     var id: Long? = null,
     var title: String? = null,
     var categoryId: Long? = null,

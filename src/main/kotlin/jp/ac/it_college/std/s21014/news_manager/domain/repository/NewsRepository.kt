@@ -1,10 +1,13 @@
 package jp.ac.it_college.std.s21014.news_manager.domain.repository
 
-import jp.ac.it_college.std.s21014.news_manager.infrastructure.database.record.BundledNewsRecord
-import jp.ac.it_college.std.s21014.news_manager.infrastructure.database.record.NewsRecord
+import jp.ac.it_college.std.s21014.news_manager.domain.model.NewsWithCategoryModel
+import jp.ac.it_college.std.s21014.news_manager.infrastructure.database.record.News
 
 interface NewsRepository {
-    fun findAll(includeUnpublished: Boolean, page: Long) : List<BundledNewsRecord>
-    fun findById(id: Long, includeUnpublished: Boolean) : BundledNewsRecord
-    fun register(news: NewsRecord)
+    fun findAllWithCategory(): List<NewsWithCategoryModel>
+
+    fun findWithCategory(id: Long): NewsWithCategoryModel?
+
+    fun register(news: News)
+
 }

@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.7.0"
+    id("org.springframework.boot") version "2.4.3"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("com.thinkimi.gradle.MybatisGenerator") version "2.4"
     kotlin("jvm") version "1.6.21"
@@ -17,15 +17,15 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2")
+    implementation("org.springframework.session:spring-session-core")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
 
     implementation("org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.4.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.5")
@@ -33,11 +33,6 @@ dependencies {
 
     implementation("org.springframework.session:spring-session-data-redis")
     implementation("redis.clients:jedis")
-}
-
-mybatisGenerator {
-    verbose = true
-    configFile = "${projectDir}/src/main/resources/generatorConfig.xml"
 }
 
 tasks.withType<KotlinCompile> {
@@ -49,4 +44,9 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = "${projectDir}/src/main/resources/generatorConfig.xml"
 }
